@@ -6,8 +6,8 @@ console.log("hi there");
 var margin = {
     top: 50,
     right: 50,
-    bottom: 50,
-    left: 50
+    bottom: 100,
+    left: 100
 };
 
 var height = svgHeight - margin.top - margin.bottom;
@@ -32,8 +32,8 @@ var svg = d3.select("#scatter")
 
 //setup functions to scale the x axis and y axis upon selection of axis
 
-var chosenXAxis = "In Poverty (%)"
-var chosenYAxis = "Obese(%)"
+var chosenXAxis = "poverty"
+var chosenYAxis = "obesity"
 
 function xScale(healthData, chosenXAxis) {
     // create scales
@@ -42,7 +42,7 @@ function xScale(healthData, chosenXAxis) {
         d3.max(healthData, d => d[chosenXAxis]) * 1.2
         ])
         .range([0, width]);
-
+    console.log("within the function")
     return xLinearScale;
 }
 
@@ -59,41 +59,83 @@ function yScale(healthData, chosenXAxis) {
 
 //setup functions to update the xAxis and yAxis on click
 
-function renderAxes(newXScale, xAxis) {
+function renderXAxes(newXScale, xAxis) {
     var bottomAxis = d3.axisBottom(newXScale);
-  
+
     xAxis.transition()
-      .duration(1000)
-      .call(bottomAxis);
-  
+        .duration(1000)
+        .call(bottomAxis);
+
     return xAxis;
-  }
-  
-  function renderAxes(newYScale, YAxis) {
+}
+
+function renderYAxes(newYScale, YAxis) {
     var bottomAxis = d3.axisBottom(newYScale);
-  
-    xAxis.transition()
-      .duration(1000)
-      .call(bottomAxis);
-  
-    return xAxis;
-  }
 
-  // function used for updating circles group with a transition to
-  // new circles
-  
+    yAxis.transition()
+        .duration(1000)
+        .call(leftAxis);
 
+    return yAxis;
+}
 
+// function used for updating circles group with a transition to
+// new circles
 
-function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
 
     circlesGroup.transition()
-      .duration(1000)
-      .attr("cx", d => newXScale(d[chosenXAxis]));
-  
+        .duration(1000)
+        .attr("cx", d => newXScale(d[chosenXAxis]))
+        .attr("cy", d => newYScale(d[chosenYAxis]));
+
     return circlesGroup;
-  }
-  
+}
+
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+    var xLabel;
+    var yLabel;
+
+    if (chosenXAxis === "poverty") {
+        xLabel = "In Poverty (%):";
+    }
+    else if (chosenXAxis == "age") {
+        xLabel = "Age (Media):";
+    }
+    else {
+        xLabel = "Household Income (Median):"
+    }
+
+    if (chosenYAxis === "obesity") {
+        yLabel = "Obese(%):";
+    }
+    else if (chosenYAxis == "smokes") {
+        yLabel = "Smokes(%):";
+    }
+    else {
+        yLabel = "Lacks-Healthcare (%):"
+    }
+
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function (d) {
+            return (`${d.state}<br>${xLabel} ${d[chosenXAxis]}%<br>${yLabel} ${d[chosenYAxis]}%`);
+        });
+
+    circlesGroup.call(toolTip);
+
+    circlesGroup.on("mouseover", function (data) {
+        toolTip.show(data);
+    })
+        // onmouseout event
+        .on("mouseout", function (data, index) {
+            toolTip.hide(data);
+        });
+
+    return circlesGroup;
+}
 
 
 
@@ -126,21 +168,24 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         data.smokesHigh = +data.smokesHigh
 
     })
-
+    console.log("here")
     // create x and y scales
-    var xScale = d3.scaleLinear()
+
+    // var xLinearScale = xScale(healthData, chosenXAxis)
+
+    var xLinearScale = d3.scaleLinear()
         .domain([d3.min(healthData, d => d.poverty), d3.max(healthData, d => d.poverty)])
         .range([0, width]);
 
-    var yScale = d3.scaleLinear()
+    var yLinearScale = d3.scaleLinear()
         .domain([d3.min(healthData, d => d.smokes), d3.max(healthData, d => d.smokes)])
         .range([height, 0]);
 
     // Create axis functions
+    console.log("here1")
+    var bottomAxis = d3.axisBottom(xLinearScale);
 
-    var bottomAxis = d3.axisBottom(xScale);
-
-    var leftAxis = d3.axisLeft(yScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
 
     //append axes to the chart
 
@@ -160,7 +205,8 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .enter()
         .append("g")
         .attr("transform", function (d) {
-            return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
+            console.log("d.poverty", d.abbr, d.poverty)
+            return "translate(" + xLinearScale(d.poverty) + "," + yLinearScale(d.smokes) + ")"
         });
 
     var circle = circleContainer
@@ -176,21 +222,46 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .text(d => d.abbr)
 
     // Append axes titles
-    chartGroup.append("text")
+        //need to make groups for each of the sets of labels
+
+    var xLabelsGroup = chartGroup.append("g")
+        .attr("transform", `translate(${width / 2}, ${height + margin.top - 10})`)
         .style("font-weight", "bolder")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
+
+    var povertyLabel = xLabelsGroup.append("text")
+       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
         .classed("aText", true)
         .text("Poverty");
 
-    chartGroup.append("text")
-        .style("font-weight", "bolder")
-        .attr("transform", "rotate(-90)")
-        .attr("x", 0 - (height / 2))
-        .attr("y", 0 - margin.left)
-        .attr("dy", "1em")
+       var ageLabel =  xLabelsGroup.append("text")
+        .attr("dy", "1.5em")
+       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
         .classed("aText", true)
-        .text("Smokes");
+        .text("Age (Median)");
 
+       var obesityLabel = xLabelsGroup.append("text")
+        .attr("dy", "3em")
+       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
+        .classed("aText", true)
+        .text("Household Income (Median)");
+
+        var yLabelsGroup = chartGroup.append("g")
+        .attr("transform", `translate( ${0 - margin.left+70}, ${0 + (height / 2)} )` + " rotate(-90)")
+        .style("font-weight", "bolder")
+
+        var smokesLabel = yLabelsGroup.append("text")
+        .classed("aText", true)
+        .text("Obesity (%)");
+
+        var smokesLabel = yLabelsGroup.append("text")
+        .classed("aText", true)
+        .attr("dy", "-1.5em")
+        .text("Smokes (%)");
+
+        var smokesLabel = yLabelsGroup.append("text")
+        .classed("aText", true)
+        .attr("dy", "-3em")
+        .text("Lacks Healthcare (%)");
 
 
 
