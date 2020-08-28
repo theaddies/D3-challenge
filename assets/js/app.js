@@ -87,7 +87,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var circle = circleContainer
         .append("circle")
-        .attr("r", "15")
+        .attr("r", circleRadius)
         .classed("stateCircle", true)
 
     circleContainer.append("text")
@@ -97,6 +97,21 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .attr("dy", function (d) { return circleRadius - 10 })
         .text(d => d.abbr)
 
+    // Append axes titles
+    chartGroup.append("text")
+        .style("font-weight", "bolder")
+        .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
+        .classed("aText", true)
+        .text("Poverty");
+
+    chartGroup.append("text")
+        .style("font-weight", "bolder")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 0 - (height / 2))
+        .attr("y", 0 - margin.left)
+        .attr("dy", "1em")
+        .classed("aText", true)
+        .text("Smokes");
 
 
 
