@@ -74,16 +74,33 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .call(leftAxis);
 
     //create circles for data
-
+chartGroup.exit()
     var circleRadius = 15
 
-    var circleContainer = chartGroup.selectAll("g")
+    var circleContainer = chartGroup.append("g").selectAll("g")
         .data(healthData)
         .enter()
         .append("g")
+        // .merge(circleContainer)
         .attr("transform", function (d) {
+            console.log(d.abbr, d.obesity)
             return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
         });
+        
+        circleContainer.exit();
+
+// // // //  ********************************************************** */
+// // var austinTemps = [5, 59, 59, 73, 200];
+// // var selection = d3.select("#content").selectAll(".temps")
+// //     .data(austinTemps);
+
+// // selection.enter()
+// //     .append("div")
+// //     .classed("temps", true)
+// //     .merge(selection)
+// //     .style("height", function(d) {
+// //       return d + "px";
+// //     });
 
     var circle = circleContainer
         .append("circle")
@@ -118,3 +135,6 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
 
 })
+
+const dataPromise = d3.csv("./assets/data/data.csv");
+console.log("data promiise", dataPromise)
