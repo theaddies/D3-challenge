@@ -9,7 +9,7 @@ var margin = {
     bottom: 50,
     left: 50
 };
-
+var chosenXAxis = "poverty"
 var height = svgHeight - margin.top - margin.bottom;
 var width = svgWidth - margin.left - margin.right;
 
@@ -21,6 +21,55 @@ var svg = d3.select("#scatter")
 
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+    var xLabel;
+    var yLabel;
+    console.log("calling tooltip1")
+    if (chosenXAxis === "poverty") {
+        xLabel = "In Poverty (%):";
+    }
+    else if (chosenXAxis == "age") {
+        xLabel = "Age (Media):";
+    }
+    else {
+        xLabel = "Household Income (Median):"
+    }
+
+    if (chosenYAxis === "obesity") {
+        yLabel = "Obese(%):";
+    }
+    else if (chosenYAxis == "smokes") {
+        yLabel = "Smokes(%):";
+    }
+    else {
+        yLabel = "Lacks-Healthcare (%):"
+    }
+    console.log("calling tooltip2")
+    var toolTip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([80, -60])
+        .html(function (d) {
+            return (`${d.state}<br>
+            ${xLabel} ${d[chosenXAxis]}<br>
+            ${yLabel} ${d[chosenYAxis]}`);
+        });
+    console.log("toolTip", toolTip)
+    console.log("calling tooltip3")
+    circlesGroup.call(toolTip);
+
+    circlesGroup.on("mouseover", function (data) {
+        toolTip.show(data);
+    })
+        // onmouseout event
+        .on("mouseout", function (data, index) {
+            toolTip.hide(data);
+        });
+
+    return circlesGroup;
+}
+
 
 //  Import the data and start the promise
 
@@ -74,7 +123,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .call(leftAxis);
 
     //create circles for data
-chartGroup.exit()
+    chartGroup.exit()
     var circleRadius = 15
 
     var circleContainer = chartGroup.append("g").selectAll("g")
@@ -86,21 +135,7 @@ chartGroup.exit()
             console.log(d.abbr, d.obesity)
             return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
         });
-        
-        circleContainer.exit();
 
-// // // //  ********************************************************** */
-// // var austinTemps = [5, 59, 59, 73, 200];
-// // var selection = d3.select("#content").selectAll(".temps")
-// //     .data(austinTemps);
-
-// // selection.enter()
-// //     .append("div")
-// //     .classed("temps", true)
-// //     .merge(selection)
-// //     .style("height", function(d) {
-// //       return d + "px";
-// //     });
 
     var circle = circleContainer
         .append("circle")
@@ -130,6 +165,8 @@ chartGroup.exit()
         .classed("aText", true)
         .text("Smokes");
 
+  // updateToolTip function above csv import
+  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
 
 
