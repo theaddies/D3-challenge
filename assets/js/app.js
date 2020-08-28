@@ -13,11 +13,89 @@ var margin = {
 var height = svgHeight - margin.top - margin.bottom;
 var width = svgWidth - margin.left - margin.right;
 
+//Let's decide the variables to use for the x and y axes
+//x axes
+// In Poverty (%)
+//Age (Media)
+// Household Income (Median)
+
+//y axes
+//Obese(%)
+//Smokes(%)
+//Lacks-Healthcare (%)
+
 // append svg and group
 var svg = d3.select("#scatter")
     .append("svg")
     .attr("height", svgHeight)
     .attr("width", svgWidth);
+
+//setup functions to scale the x axis and y axis upon selection of axis
+
+var chosenXAxis = "In Poverty (%)"
+var chosenYAxis = "Obese(%)"
+
+function xScale(healthData, chosenXAxis) {
+    // create scales
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(healthData, d => d[chosenXAxis]) * 0.8,
+        d3.max(healthData, d => d[chosenXAxis]) * 1.2
+        ])
+        .range([0, width]);
+
+    return xLinearScale;
+}
+
+function yScale(healthData, chosenXAxis) {
+    // create scales
+    var yLinearScale = d3.scaleLinear()
+        .domain([d3.min(healthData, d => d[chosenYAxis]) * 0.8,
+        d3.max(healthData, d => d[chosenYAxis]) * 1.2
+        ])
+        .range([0, width]);
+
+    return yLinearScale;
+}
+
+//setup functions to update the xAxis and yAxis on click
+
+function renderAxes(newXScale, xAxis) {
+    var bottomAxis = d3.axisBottom(newXScale);
+  
+    xAxis.transition()
+      .duration(1000)
+      .call(bottomAxis);
+  
+    return xAxis;
+  }
+  
+  function renderAxes(newYScale, YAxis) {
+    var bottomAxis = d3.axisBottom(newYScale);
+  
+    xAxis.transition()
+      .duration(1000)
+      .call(bottomAxis);
+  
+    return xAxis;
+  }
+
+  // function used for updating circles group with a transition to
+  // new circles
+  
+
+
+
+function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+
+    circlesGroup.transition()
+      .duration(1000)
+      .attr("cx", d => newXScale(d[chosenXAxis]));
+  
+    return circlesGroup;
+  }
+  
+
+
 
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
