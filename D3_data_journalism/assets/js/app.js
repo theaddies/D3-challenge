@@ -28,9 +28,9 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
     console.log("healthData", healthData);
     console.log([healthData]);
 
-        //tidy data to make sure it is all numbers
+    //tidy data to make sure it is all numbers
 
-    healthData.forEach(function(data){
+    healthData.forEach(function (data) {
         data.poverty = +data.poverty;
         data.povertyMoe = +data.povertyMo
         data.age = +data.age
@@ -51,11 +51,11 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     // create x and y scales
     var xScale = d3.scaleLinear()
-        .domain([0, d3.max(healthData, d => d.poverty)])
+        .domain([d3.min(healthData, d => d.poverty), d3.max(healthData, d => d.poverty)])
         .range([0, width]);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(healthData, d => d.smokes)])
+        .domain([d3.min(healthData, d => d.smokes), d3.max(healthData, d => d.smokes)])
         .range([height, 0]);
 
     // Create axis functions
@@ -75,15 +75,30 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     //create circles for data
 
-    var circlesGroup = chartGroup.selectAll("circle")
-    .data(healthData)
-    .enter()
-    .append("circle")
-    .attr("cx", d => xScale(d.poverty))
-    .attr("cy", d => yScale(d.smokes))
-    .attr("r", "15")
-    .attr("fill", "LightSkyBlue")
-    
+    var circleRadius = 15
+
+    var circleContainer = chartGroup.selectAll("g")
+        .data(healthData)
+        .enter()
+        .append("g")
+        .attr("transform", function (d) {
+            return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
+        });
+
+    var circle = circleContainer
+        .append("circle")
+        .attr("r", "15")
+        .classed("stateCircle", true)
+
+    circleContainer.append("text")
+        .style("text-anchor", "middle")
+        .classed("stateText", true)
+        // .attr("dx", function(d){return -10})
+        .attr("dy", function (d) { return circleRadius - 10 })
+        .text(d => d.abbr)
+
+
+
 
 
 
