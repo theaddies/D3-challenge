@@ -30,6 +30,8 @@
   fill: #fff;
   text-anchor: middle;
   font-weight: bold;
+  font-size: 20px;
+  z-index: 3;
 }
 
 .stateCircle {

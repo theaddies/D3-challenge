@@ -30,6 +30,10 @@ var svg = d3.select("#scatter")
     .attr("height", svgHeight)
     .attr("width", svgWidth);
 
+
+var chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 //setup functions to scale the x axis and y axis upon selection of axis
 
 var chosenXAxis = "poverty"
@@ -83,11 +87,15 @@ function renderYAxis(newYScale, yAxis) {
 // new circles
 
 function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
-console.log("trying to render circles")
+    console.log("chosenXAxis", chosenXAxis)
     circlesGroup.transition()
         .duration(1000)
-        .attr("cx", d => newXScale(d[chosenXAxis]))
-        //.attr("cy", d => newYScale(d[chosenYAxis]));
+        .attr("cx", function (d) {
+            console.log("d chosenXAxis", d[chosenXAxis]);
+            console.log("d", d)
+            newXScale(d[chosenXAxis])
+        });
+    //.attr("cy", d => newYScale(d[chosenYAxis]));
 
     return circlesGroup;
 }
@@ -140,21 +148,19 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 }
 
 
-
-var chartGroup = svg.append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
 //  Import the data and start the promise
 
-d3.csv("./assets/data/data.csv").then(function (healthData) {
+d3.csv("./assets/data/data.csv").then(function (healthData, err) {
+    if(err) throw err;
     console.log("healthData", healthData);
-    console.log([healthData]);
+    console.log("array", [healthData]);
 
     //tidy data to make sure it is all numbers
 
     healthData.forEach(function (data) {
+        console.log("state", data.abbr)
         data.poverty = +data.poverty;
-        data.povertyMoe = +data.povertyMo
+        data.povertyMoe = +data.povertyMoe
         data.age = +data.age
         data.ageMoe = +data.ageMoe
         data.income = +data.income
@@ -171,16 +177,19 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     })
     console.log("here")
+    console.log("health data", healthData)
     // create x and y scales
 
     // var xLinearScale = xScale(healthData, chosenXAxis)
 
-    var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(healthData, d => d.poverty), d3.max(healthData, d => d.poverty)])
-        .range([0, width]);
+    // var xLinearScale = d3.scaleLinear()
+    //     .domain([d3.min(healthData, d => d.poverty), d3.max(healthData, d => d.poverty)])
+    //     .range([0, width]);
+
+    var xLinearScale = xScale(healthData, chosenXAxis)
 
     var yLinearScale = d3.scaleLinear()
-        .domain([d3.min(healthData, d => d.smokes), d3.max(healthData, d => d.smokes)])
+        .domain([d3.min(healthData, d => d.obesity), d3.max(healthData, d => d.obesity)])
         .range([height, 0]);
 
     // Create axis functions
@@ -202,26 +211,50 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var circleRadius = 15
 
-    var circlesGroup = chartGroup.selectAll("g")
+        console.log(healthData)
+    var circlesGroup = chartGroup.selectAll("circle")
         .data(healthData)
         .enter()
-        .append("g")
-        .attr("transform", function (d) {
-            console.log("d.poverty", d.abbr, d.poverty)
-            return "translate(" + xLinearScale(d.poverty) + "," + yLinearScale(d.smokes) + ")"
-        });
-
-    var circle = circlesGroup
         .append("circle")
+        .attr("cx", d => xLinearScale(d[chosenXAxis]))
+        .attr("cy", d => yLinearScale(d[chosenYAxis]))
         .attr("r", circleRadius)
         .classed("stateCircle", true);
 
-    circlesGroup.append("text")
-        .style("text-anchor", "middle")
-        .classed("stateText", true)
-        // .attr("dx", function(d){return -10})
-        .attr("dy", function (d) { return circleRadius - 10 })
+        var text = chartGroup
+        .data(healthData)
+        .enter()
+        .append("text")
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d[chosenYAxis]))
         .text(d => d.abbr)
+
+        });
+    // circlesGroup.append("text")
+    //     .style("text-anchor", "middle")
+    //     .classed("stateText", true)
+    //     // .attr("dx", function(d){return -10})
+    //     .attr("dy", function (d) { return circleRadius - 10 })
+    //     .text(d => d.abbr)
+
+
+
+    // console.log(healthData)
+    // var circlesGroup = chartGroup.selectAll("circle")
+    //     .data(healthData)
+    //     .enter()
+    //     .append("g")
+    //     .attr("transform", function (d) {
+    //         console.log("d.poverty", d.abbr, d.poverty)
+    //         return "translate(" + xLinearScale(d[chosenXAxis]) + "," + yLinearScale(d[chosenYAxis]) + ")"
+    //     });
+
+    // var circlesGroup = circlesGroup
+    //     .append("circle")
+    //     .attr("r", circleRadius)
+    //     .classed("stateCircle", true);
+
+
 
     // Append axes titles
     //need to make groups for each of the sets of labels
@@ -241,7 +274,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .attr("value", "age") // value to grab for event listener
         .classed("aText", true)
         .text("Age (Median)");
-        
+
 
     var incomeLabel = xLabelsGroup.append("text")
         .attr("dy", "3em")
@@ -341,7 +374,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
 
 
-}).catch(function (error) {
-    console.log(error);
-});
+// }).catch(function (error) {
+//     console.log(error);
+// });
 
