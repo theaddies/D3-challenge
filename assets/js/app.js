@@ -96,7 +96,7 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYA
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var xLabel;
     var yLabel;
-
+    console.log("calling tooltip1")
     if (chosenXAxis === "poverty") {
         xLabel = "In Poverty (%):";
     }
@@ -116,14 +116,16 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     else {
         yLabel = "Lacks-Healthcare (%):"
     }
-
+    console.log("calling tooltip2")
     var toolTip = d3.tip()
-        .attr("class", "tooltip")
+        .attr("class", "d3-tip")
         .offset([80, -60])
         .html(function (d) {
-            return (`${d.state}<br>${xLabel} ${d[chosenXAxis]}%<br>${yLabel} ${d[chosenYAxis]}%`);
+            return (`${d.state}<br>
+            ${xLabel} ${d[chosenXAxis]}<br>
+            ${yLabel} ${d[chosenYAxis]}`);
         });
-
+        console.log("calling tooltip3")
     circlesGroup.call(toolTip);
 
     circlesGroup.on("mouseover", function (data) {
@@ -200,7 +202,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var circleRadius = 15
 
-    var circleContainer = chartGroup.selectAll("g")
+    var circlesGroup = chartGroup.selectAll("g")
         .data(healthData)
         .enter()
         .append("g")
@@ -209,12 +211,12 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
             return "translate(" + xLinearScale(d.poverty) + "," + yLinearScale(d.smokes) + ")"
         });
 
-    var circle = circleContainer
+    var circle = circlesGroup
         .append("circle")
         .attr("r", circleRadius)
-        .classed("stateCircle", true)
+        .classed("stateCircle", true);
 
-    circleContainer.append("text")
+        circlesGroup.append("text")
         .style("text-anchor", "middle")
         .classed("stateText", true)
         // .attr("dx", function(d){return -10})
@@ -231,7 +233,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
     var povertyLabel = xLabelsGroup.append("text")
        // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
         .classed("aText", true)
-        .text("Poverty");
+        .text("In Poverty (%)");
 
        var ageLabel =  xLabelsGroup.append("text")
         .attr("dy", "1.5em")
@@ -263,6 +265,8 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .attr("dy", "-3em")
         .text("Lacks Healthcare (%)");
 
+  // updateToolTip function above csv import
+  var circlesGroup = updateToolTip(chosenXAxis, chosenXAxis, circlesGroup);
 
 
 
