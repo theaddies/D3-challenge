@@ -226,48 +226,6 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .attr("dy", function (d) { return circleRadius - 10 })
         .text(d => d.abbr)
 
-    // Append axes titles
-        //need to make groups for each of the sets of labels
-
-    var xLabelsGroup = chartGroup.append("g")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top - 10})`)
-        .style("font-weight", "bolder")
-
-    var povertyLabel = xLabelsGroup.append("text")
-       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
-        .classed("aText", true)
-        .text("In Poverty (%)");
-
-       var ageLabel =  xLabelsGroup.append("text")
-        .attr("dy", "1.5em")
-       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
-        .classed("aText", true)
-        .text("Age (Median)");
-
-       var obesityLabel = xLabelsGroup.append("text")
-        .attr("dy", "3em")
-       // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
-        .classed("aText", true)
-        .text("Household Income (Median)");
-
-        var yLabelsGroup = chartGroup.append("g")
-        .attr("transform", `translate( ${0 - margin.left+70}, ${0 + (height / 2)} )` + " rotate(-90)")
-        .style("font-weight", "bolder")
-
-        var smokesLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
-        .text("Obesity (%)");
-
-        var smokesLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
-        .attr("dy", "-1.5em")
-        .text("Smokes (%)");
-
-        var smokesLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
-        .attr("dy", "-3em")
-        .text("Lacks Healthcare (%)");
-
   // updateToolTip function above csv import
   var circlesGroup = updateToolTip(chosenXAxis, chosenXAxis, circlesGroup);
     // Append axes titles
@@ -275,50 +233,50 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var xLabelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + margin.top - 10})`)
-        .style("font-weight", "bolder")
+
 
     var povertyLabel = xLabelsGroup.append("text")
         // .attr("transform", `translate(${width / 2}, ${height + margin.top - 20})`)
-        .classed("aText", true)
+        .classed("active", true)
         .attr("value", "poverty") // value to grab for event listener
         .text("In Poverty (%)");
 
     var ageLabel = xLabelsGroup.append("text")
         .attr("dy", "1.5em")
         .attr("value", "age") // value to grab for event listener
-        .classed("aText", true)
+        .classed("active", true)
         .text("Age (Median)");
 
 
     var incomeLabel = xLabelsGroup.append("text")
         .attr("dy", "3em")
         .attr("value", "income") // value to grab for event listener
-        .classed("aText", true)
+        .classed("active", true)
         .text("Household Income (Median)");
 
     var yLabelsGroup = chartGroup.append("g")
         .attr("transform", `translate( ${0 - margin.left + 70}, ${0 + (height / 2)} )` + " rotate(-90)")
-        .style("font-weight", "bolder")
+
 
     var obesityLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
+        .classed("active", true)
         .attr("value", "obesity") // value to grab for event listener
         .text("Obesity (%)");
 
     var smokesLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
+        .classed("active", true)
         .attr("value", "smokes") // value to grab for event listener
         .attr("dy", "-1.5em")
         .text("Smokes (%)");
 
     var healthcareLabel = yLabelsGroup.append("text")
-        .classed("aText", true)
+        .classed("active", true)
         .attr("value", "healthcare") // value to grab for event listener
         .attr("dy", "-3em")
         .text("Lacks Healthcare (%)");
     console.log("does code ever get here")
 
-    
+
     // updateToolTip function above csv import
   xLabelsGroup.selectAll("text")
   .on("click", function () {
@@ -349,7 +307,8 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
           if (chosenXAxis === "poverty") {
               povertyLabel
                   .classed("active", true)
-                  .classed("inactive", false);
+                  .classed("inactive", false)
+                  .enter();
               ageLabel
                   .classed("active", false)
                   .classed("inactive", true);
