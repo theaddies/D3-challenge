@@ -129,6 +129,9 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     circlesGroup.call(toolTip);
 
     circlesGroup.on("mouseover", function (data) {
+        console.log("tooltip data shown here***", data)
+        console.log("d3 event target", d3.event.target)
+        console.log("d3 event target", d3.event.target.getBBox())
         toolTip.show(data);
     })
         // onmouseout event
