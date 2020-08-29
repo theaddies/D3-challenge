@@ -146,6 +146,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     circlesGroup.on("mouseover", function (data) {
         console.log("tooltip data shown here***", data)
         console.log("d3 event target", d3.event.target)
+        console.log("d3 event target", d3.event.target.getBBox())
+        console.log("d3 event target x", d3.event.target.getBBox().x)
         toolTip.show(data);
     })
         // onmouseout event
@@ -159,8 +161,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
 //  Import the data and start the promise
 
-d3.csv("./assets/data/data.csv").then(function (healthData) {
-
+d3.csv("./assets/data/data.csv").then(function (healthData, err) {
+    if (err) throw err;
     console.log("healthData", healthData);
     console.log("array", [healthData]);
 
@@ -388,11 +390,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
                 }
             }
         });
-
-
-
-    // }).catch(function (error) {
-    //     console.log(error);
-    // });
-
+}).catch(function (error) {
+    console.log(error);
 });
+
