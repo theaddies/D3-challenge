@@ -92,6 +92,14 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
     return circlesGroup;
 }
 
+// .attr("transform", function (d) {
+//     console.log("d.poverty", d.abbr, d.poverty)
+//     return "translate(" + xLinearScale(d.poverty) + "," + yLinearScale(d.smokes) + ")"
+// });
+
+
+
+
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var xLabel;
@@ -270,7 +278,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .text("Smokes (%)");
 
     var healthcareLabel = yLabelsGroup.append("text")
-        .classed("active", true)
+        .classed("active", false)
         .attr("value", "healthcare") // value to grab for event listener
         .attr("dy", "-3em")
         .text("Lacks Healthcare (%)");
