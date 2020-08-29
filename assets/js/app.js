@@ -46,7 +46,7 @@ function xScale(healthData, chosenXAxis) {
     return xLinearScale;
 }
 
-function yScale(healthData, chosenXAxis) {
+function yScale(healthData, chosenYAxis) {
     // create scales
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(healthData, d => d[chosenYAxis]) * 0.8,
@@ -202,7 +202,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var circleRadius = 15
 
-    var circlesGroup = chartGroup.selectAll("g")
+    var circlesGroup = chartGroup.append("g").selectAll("g")
         .data(healthData)
         .enter()
         .append("g")
