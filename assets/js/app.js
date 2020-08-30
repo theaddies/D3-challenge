@@ -94,17 +94,30 @@ function renderYAxis(newYScale, YAxis) {
 // function used for updating circles group with a transition to
 // new circles
 
-function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
+function renderXCircles(circlesGroup, newXScale, chosenXAxis, yLinearScale) {
 
     circlesGroup.transition()
         .duration(1000)
         .attr("transform", function (d) {
+            console.log("chosenYAxis within render X circles", chosenYAxis)
             return "translate(" + newXScale(d[chosenXAxis]) + ","
-                + newYScale(d[chosenYAxis]) + ")"
+                + yLinearScale(d[chosenYAxis]) + ")"
         })
 
     return circlesGroup;
 }
+
+// function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
+
+//     circlesGroup.transition()
+//         .duration(1000)
+//         .attr("transform", function (d) {
+//             return "translate(" + newXScale(d[chosenXAxis]) + ","
+//                 + newYScale(d[chosenYAxis]) + ")"
+//         })
+
+//     return circlesGroup;
+// }
 
 // .attr("transform", function (d) {
 //     console.log("d.poverty", d.abbr, d.poverty)
@@ -316,9 +329,9 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
                 xAxis = renderXAxis(xLinearScale, xAxis);
                 console.log("herer2")
                 // updates circles with new x values
-                circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
+                circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale);
 
-                console.log("herer3")
+                console.log("chosenYAxis =", chosenYAxis)
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
                 console.log("herer4")
