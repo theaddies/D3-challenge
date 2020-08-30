@@ -171,9 +171,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     return circlesGroup;
 }
 
-
-
->>>>>>> tooltips
 //  Import the data and start the promise
 
 d3.csv("./assets/data/data.csv").then(function (healthData) {
@@ -226,37 +223,17 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
     chartGroup.exit()
     var circleRadius = 15
 
-<<<<<<< HEAD
-    var circleContainer = chartGroup.append("g").selectAll("g")
-||||||| bbc34bd
-    var circleContainer = chartGroup.selectAll("g")
-=======
     var circlesGroup = chartGroup.append("g").selectAll("g")
->>>>>>> tooltips
         .data(healthData)
         .enter()
         .append("g")
         // .merge(circleContainer)
         .attr("transform", function (d) {
-<<<<<<< HEAD
-            console.log(d.abbr, d.obesity)
-            return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
-||||||| bbc34bd
-            return "translate(" + xScale(d.poverty) + "," + yScale(d.smokes) + ")"
-=======
             console.log("d.poverty", d.abbr, d.poverty)
             return "translate(" + xLinearScale(d[chosenXAxis]) + "," + yLinearScale(d[chosenYAxis]) + ")"
->>>>>>> tooltips
         });
 
-<<<<<<< HEAD
-
-    var circle = circleContainer
-||||||| bbc34bd
-    var circle = circleContainer
-=======
     var circle = circlesGroup
->>>>>>> tooltips
         .append("circle")
         .attr("r", circleRadius)
         .classed("stateCircle", true);
@@ -294,14 +271,8 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .classed("inactive", true)
         .text("Household Income (Median)");
 
-<<<<<<< HEAD
-  // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
-||||||| bbc34bd
-=======
     var yLabelsGroup = chartGroup.append("g")
         .attr("transform", `translate( ${0 - margin.left + 70}, ${0 + (height / 2)} )` + " rotate(-90)")
->>>>>>> tooltips
 
     var obesityLabel = yLabelsGroup.append("text")
         .classed("active", true)
