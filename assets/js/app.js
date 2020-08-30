@@ -121,26 +121,6 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis, xLinearScale) {
 }
 
 
-// function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
-
-//     circlesGroup.transition()
-//         .duration(1000)
-//         .attr("transform", function (d) {
-//             return "translate(" + newXScale(d[chosenXAxis]) + ","
-//                 + newYScale(d[chosenYAxis]) + ")"
-//         })
-
-//     return circlesGroup;
-// }
-
-// .attr("transform", function (d) {
-//     console.log("d.poverty", d.abbr, d.poverty)
-//     return "translate(" + xLinearScale(d.poverty) + "," + yLinearScale(d.smokes) + ")"
-// });
-
-
-
-
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var xLabel;
@@ -289,13 +269,13 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
     var ageLabel = xLabelsGroup.append("text")
         .attr("dy", "1.5em")
         .attr("value", "age") // value to grab for event listener
-        .classed("active", true)
+        .classed("inactive", true)
         .text("Age (Median)");
 
     var incomeLabel = xLabelsGroup.append("text")
         .attr("dy", "3em")
         .attr("value", "income") // value to grab for event listener
-        .classed("active", true)
+        .classed("inactive", true)
         .text("Household Income (Median)");
 
     var yLabelsGroup = chartGroup.append("g")
@@ -307,13 +287,13 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .text("Obesity (%)");
 
     var smokesLabel = yLabelsGroup.append("text")
-        .classed("active", true)
+        .classed("inactive", true)
         .attr("value", "smokes") // value to grab for event listener
         .attr("dy", "-1.5em")
         .text("Smokes (%)");
 
     var healthcareLabel = yLabelsGroup.append("text")
-        .classed("active", true)
+        .classed("inactive", true)
         .attr("value", "healthcare") // value to grab for event listener
         .attr("dy", "-3em")
         .text("Lacks Healthcare (%)");
