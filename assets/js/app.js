@@ -81,7 +81,7 @@ function renderXAxis(newXScale, xAxis) {
     return xAxis;
 }
 
-function renderYAxis(newYScale, YAxis) {
+function renderYAxis(newYScale, yAxis) {
     var leftAxis = d3.axisLeft(newYScale);
 
     yAxis.transition()
