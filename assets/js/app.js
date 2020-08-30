@@ -173,7 +173,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
 //  Import the data and start the promise
 
-d3.csv("./assets/data/data.csv").then(function (healthData) {
+d3.csv("./assets/data/data.csv").then(function (healthData, err) {
+    if (err) throw err;
     console.log("healthData", healthData);
     console.log([healthData]);
 
@@ -429,7 +430,6 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
             }
         });
 
-})
-
-const dataPromise = d3.csv("./assets/data/data.csv");
-console.log("data promiise", dataPromise)
+}).catch(function (error) {
+    console.log(error);
+});
