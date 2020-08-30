@@ -44,8 +44,8 @@ console.log("chosen yAxis", chosenYAxis)
 function xScale(healthData, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(healthData, d => d[chosenXAxis]) * 0.8,
-        d3.max(healthData, d => d[chosenXAxis]) * 1.2
+        .domain([d3.min(healthData, d => d[chosenXAxis]) * 0.9,
+        d3.max(healthData, d => d[chosenXAxis]) * 1.1
         ])
         .range([0, width]);
     console.log("within the function")
@@ -55,8 +55,8 @@ function xScale(healthData, chosenXAxis) {
 function yScale(healthData, chosenYAxis) {
     // create scales
     var yLinearScale = d3.scaleLinear()
-        .domain([d3.min(healthData, d => d[chosenYAxis]) * 0.8,
-        d3.max(healthData, d => d[chosenYAxis]) * 1.2
+        .domain([d3.min(healthData, d => d[chosenYAxis]) * 0.9,
+        d3.max(healthData, d => d[chosenYAxis]) * 1.1
         ])
         .range([height, 0]);
 
@@ -203,14 +203,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
 
     var xLinearScale = xScale(healthData, chosenXAxis)
 
-    // var xLinearScale = d3.scaleLinear()
-    //     .domain([d3.min(healthData, d => d.poverty), d3.max(healthData, d => d.poverty)])
-    //     .range([0, width]);
-
     var yLinearScale = yScale(healthData, chosenYAxis)
-    // var yLinearScale = d3.scaleLinear()
-    //     .domain([d3.min(healthData, d => d.smokes), d3.max(healthData, d => d.smokes)])
-    //     .range([height, 0]);
 
     // Create axis functions
     console.log("here1")
@@ -299,7 +292,6 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
         .text("Lacks Healthcare (%)");
     console.log("does code ever get here")
 
-
     // make x-axis active and update all data based on selection and change look of axis
     xLabelsGroup.selectAll("text")
         .on("click", function () {
@@ -367,7 +359,6 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
                 }
             }
         });
-
 
     // make y-axis active and update all data based on selection and change look of axis
     yLabelsGroup.selectAll("text")
