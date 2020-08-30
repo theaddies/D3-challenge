@@ -428,7 +428,7 @@ d3.csv("./assets/data/data.csv").then(function (healthData) {
                         .classed("active", false)
                         .classed("inactive", true);
                 }
-                else if (chosenYAxis === "age") {
+                else if (chosenYAxis === "smokes") {
                     smokesLabel
                         .classed("active", true)
                         .classed("inactive", false);
